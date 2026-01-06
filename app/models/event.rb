@@ -75,7 +75,7 @@ class Event < ApplicationRecord
     if dollar_amount.blank?
       self.cost_cents = nil
     else
-      dollar_amount = dollar_amount.to_s.gsub(/[^\d.]/, '').to_f
+      dollar_amount = dollar_amount.to_s.gsub(/[^\d.]/, "").to_f
       self.cost_cents = (dollar_amount.to_f * 100).round
     end
   end
