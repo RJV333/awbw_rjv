@@ -22,8 +22,8 @@ class AddPaymentsTable < ActiveRecord::Migration[8.1]
 
     add_index :payments, :stripe_payment_intent_id, unique: true
     add_index :payments, :stripe_charge_id
-    add_index :payments, [:payer_type, :payer_id]
-    add_index :payments, [:payable_type, :payable_id]
-    add_index :payments, [:payable_type, :payable_id, :status]
+    add_index :payments, [ :payer_type, :payer_id ]
+    add_index :payments, [ :payable_type, :payable_id ]
+    add_index :payments, [ :payable_type, :payable_id, :status ]
   end
 end
