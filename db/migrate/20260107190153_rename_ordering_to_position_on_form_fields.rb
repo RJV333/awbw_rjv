@@ -3,4 +3,3 @@ class RenameOrderingToPositionOnFormFields < ActiveRecord::Migration[8.1]
     rename_column :form_fields, :ordering, :position
   end
 end
-

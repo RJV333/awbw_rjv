@@ -3,4 +3,3 @@ class RenameOrderingToPositionOnWorkshopVariations < ActiveRecord::Migration[8.1
     rename_column :workshop_variations, :ordering, :position
   end
 end
-

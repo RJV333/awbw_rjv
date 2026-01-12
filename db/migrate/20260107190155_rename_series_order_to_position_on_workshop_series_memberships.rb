@@ -3,4 +3,3 @@ class RenameSeriesOrderToPositionOnWorkshopSeriesMemberships < ActiveRecord::Mig
     rename_column :workshop_series_memberships, :series_order, :position
   end
 end
-

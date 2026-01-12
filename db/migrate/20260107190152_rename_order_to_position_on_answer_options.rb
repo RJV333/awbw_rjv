@@ -3,4 +3,3 @@ class RenameOrderToPositionOnAnswerOptions < ActiveRecord::Migration[8.1]
     rename_column :answer_options, :order, :position
   end
 end
-

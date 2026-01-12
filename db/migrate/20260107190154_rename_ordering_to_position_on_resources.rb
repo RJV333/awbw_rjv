@@ -3,4 +3,3 @@ class RenameOrderingToPositionOnResources < ActiveRecord::Migration[8.1]
     rename_column :resources, :ordering, :position
   end
 end
-
