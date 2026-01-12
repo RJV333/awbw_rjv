@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_07_190151) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_07_190156) do
   create_table "action_text_rich_texts", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.text "body", size: :long
     t.datetime "created_at", null: false
@@ -102,7 +102,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_07_190151) do
   create_table "answer_options", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.string "name"
-    t.integer "order"
+    t.integer "position"
     t.datetime "updated_at", precision: nil, null: false
   end
 
@@ -350,7 +350,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_07_190151) do
     t.integer "form_id"
     t.string "instructional_hint"
     t.boolean "is_required", default: true
-    t.integer "ordering"
+    t.integer "position"
     t.integer "parent_id"
     t.string "question"
     t.integer "status", default: 1
@@ -613,7 +613,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_07_190151) do
     t.boolean "legacy"
     t.integer "legacy_id"
     t.boolean "male", default: false
-    t.integer "ordering"
+    t.integer "position"
     t.integer "print_count", default: 0, null: false
     t.text "text", size: :long
     t.string "title"
@@ -907,7 +907,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_07_190151) do
     t.datetime "created_at", null: false
     t.string "series_description"
     t.string "series_description_spanish"
-    t.integer "series_order", default: 1, null: false
+    t.integer "position", default: 1, null: false
     t.string "theme_name"
     t.datetime "updated_at", null: false
     t.integer "workshop_child_id", null: false
@@ -923,7 +923,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_07_190151) do
     t.boolean "inactive", default: true
     t.boolean "legacy", default: false
     t.string "name"
-    t.integer "ordering"
+    t.integer "position"
     t.datetime "updated_at", precision: nil, null: false
     t.integer "variation_id"
     t.integer "view_count", default: 0, null: false
