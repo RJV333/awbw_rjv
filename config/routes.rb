@@ -5,8 +5,9 @@ Rails.application.routes.draw do
   namespace :assets do
     resources :primary_assets, only: [ :show ]
     resources :gallery_assets, only: [ :show ]
-    resources :rich_texts, only: [ :show ]
   end
+
+  resources :rich_text_assets
   namespace :images do
     resources :primary_images, only: [ :show ]
     resources :gallery_images, only: [ :show ]
@@ -104,6 +105,10 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :workshop_mentions, only: [ :index ]
+  resources :resource_mentions, only: [ :index ]
+  resources :rich_text_asset_mentions, only: [ :index ]
+
   namespace :api do
     namespace :v1 do
       resources :authentications, only: [ :create ]
@@ -112,10 +117,11 @@ Rails.application.routes.draw do
     end
   end
 
+  # Root paths
+  root to: "dashboard#index"
   authenticated :user do
     root to: "dashboard#index", as: :authenticated_root
   end
-
   # Wrap Devise routes in a scope for unauthenticated users
   devise_scope :user do
     unauthenticated do
