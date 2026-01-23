@@ -104,6 +104,14 @@
   <!-- Actions -->
   <!-- Action buttons -->
   <div class="mt-6 flex flex-wrap gap-3">
+    <% if @user.persisted? && current_user.super_user? %>
+      <button type="button"
+              class="btn <%= @user.locked_at.present? ? 'bg-green-600 hover:bg-green-700 text-white border-green-600' : 'bg-orange-600 hover:bg-orange-700 text-white border-orange-600' %> border font-medium"
+              onclick="event.preventDefault(); event.stopPropagation(); const form = document.createElement('form'); form.method = 'POST'; form.action = '<%= toggle_lock_status_user_path(@user) %>'; const token = document.querySelector('meta[name=csrf-token]'); if (token) { const input = document.createElement('input'); input.type = 'hidden'; input.name = 'authenticity_token'; input.value = token.content; form.appendChild(input); } document.body.appendChild(form); form.submit();">
+        <%= @user.locked_at.present? ? "Unlock account" : "Lock account" %>
+      </button>
+    <% end %>
+
     <% if @user.persisted? %>
       <%= link_to "Delete", @user,
                   method: :delete,
