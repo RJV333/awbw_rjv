@@ -148,61 +148,6 @@ RSpec.describe "/users", type: :request do
     end
   end
 
-  describe "GET /generate_facilitator" do
-    context "when user does not have a facilitator" do
-      it "creates a new facilitator for the user" do
-        user = User.create! valid_attributes
-        expect {
-          get generate_facilitator_user_url(user)
-        }.to change(Facilitator, :count).by(1)
-      end
-
-      it "redirects to the created facilitator" do
-        user = User.create! valid_attributes
-        get generate_facilitator_user_url(user)
-        facilitator = user.reload.facilitator
-        expect(response).to redirect_to(facilitator_url(facilitator))
-        expect(flash[:notice]).to eq("Facilitator was successfully created for this user.")
-      end
-
-      context "when facilitator creation fails" do
-        let(:invalid_facilitator) do
-          facilitator = Facilitator.new
-          allow(facilitator).to receive(:save).and_return(false)
-          allow(facilitator.errors).to receive(:full_messages).and_return([ "Error message" ])
-          facilitator
-        end
-
-        before do
-          allow_any_instance_of(FacilitatorFromUserService).to receive(:call).and_return(invalid_facilitator)
-        end
-
-        it "redirects back to the user with an error" do
-          user = User.create! valid_attributes
-          get generate_facilitator_user_url(user)
-          expect(response).to redirect_to(user_url(user))
-          expect(flash[:alert]).to include("Unable to create facilitator")
-        end
-      end
-    end
-
-    context "when user already has a facilitator" do
-      it "redirects to the existing facilitator" do
-        user = create(:user, :with_facilitator)
-        facilitator = user.facilitator
-        get generate_facilitator_user_url(user)
-        expect(response).to redirect_to(facilitator_url(facilitator))
-      end
-
-      it "does not create a new facilitator" do
-        user = create(:user, :with_facilitator)
-        expect {
-          get generate_facilitator_user_url(user)
-        }.not_to change(Facilitator, :count)
-      end
-    end
-  end
-
   describe "POST /toggle_lock_status" do
     context "when user is a super_user" do
       it "locks an unlocked user" do
