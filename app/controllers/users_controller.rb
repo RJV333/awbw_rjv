@@ -103,11 +103,16 @@ class UsersController < ApplicationController
     if @user.locked_at.present?
       # Unlock the user
       @user.update(locked_at: nil, failed_attempts: 0)
-      redirect_to edit_user_path(@user), notice: "User has been unlocked."
+      message = "User has been unlocked."
     else
       # Lock the user
       @user.update(locked_at: Time.current)
-      redirect_to edit_user_path(@user), notice: "User has been locked."
+      message = "User has been locked."
+    end
+
+    respond_to do |format|
+      format.turbo_stream { flash.now[:notice] = message }
+      format.html { redirect_to edit_user_path(@user), notice: message }
     end
   end
 
