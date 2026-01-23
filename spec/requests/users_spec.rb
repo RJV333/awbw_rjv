@@ -169,7 +169,7 @@ RSpec.describe "/users", type: :request do
         let(:invalid_facilitator) do
           facilitator = Facilitator.new
           allow(facilitator).to receive(:save).and_return(false)
-          allow(facilitator.errors).to receive(:full_messages).and_return(["Error message"])
+          allow(facilitator.errors).to receive(:full_messages).and_return([ "Error message" ])
           facilitator
         end
 
