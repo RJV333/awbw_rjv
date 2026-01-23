@@ -147,4 +147,106 @@ RSpec.describe "/users", type: :request do
       expect(response).to redirect_to(users_url)
     end
   end
+
+  describe "GET /generate_facilitator" do
+    context "when user does not have a facilitator" do
+      it "creates a new facilitator for the user" do
+        user = User.create! valid_attributes
+        expect {
+          get generate_facilitator_user_url(user)
+        }.to change(Facilitator, :count).by(1)
+      end
+
+      it "redirects to the created facilitator" do
+        user = User.create! valid_attributes
+        get generate_facilitator_user_url(user)
+        facilitator = user.reload.facilitator
+        expect(response).to redirect_to(facilitator_url(facilitator))
+        expect(flash[:notice]).to eq("Facilitator was successfully created for this user.")
+      end
+
+      context "when facilitator creation fails" do
+        let(:invalid_facilitator) do
+          facilitator = Facilitator.new
+          allow(facilitator).to receive(:save).and_return(false)
+          allow(facilitator.errors).to receive(:full_messages).and_return(["Error message"])
+          facilitator
+        end
+
+        before do
+          allow_any_instance_of(FacilitatorFromUserService).to receive(:call).and_return(invalid_facilitator)
+        end
+
+        it "redirects back to the user with an error" do
+          user = User.create! valid_attributes
+          get generate_facilitator_user_url(user)
+          expect(response).to redirect_to(user_url(user))
+          expect(flash[:alert]).to include("Unable to create facilitator")
+        end
+      end
+    end
+
+    context "when user already has a facilitator" do
+      it "redirects to the existing facilitator" do
+        user = create(:user, :with_facilitator)
+        facilitator = user.facilitator
+        get generate_facilitator_user_url(user)
+        expect(response).to redirect_to(facilitator_url(facilitator))
+      end
+
+      it "does not create a new facilitator" do
+        user = create(:user, :with_facilitator)
+        expect {
+          get generate_facilitator_user_url(user)
+        }.not_to change(Facilitator, :count)
+      end
+    end
+  end
+
+  describe "POST /toggle_lock_status" do
+    context "when user is a super_user" do
+      it "locks an unlocked user" do
+        user = User.create! valid_attributes
+        expect(user.locked_at).to be_nil
+        post toggle_lock_status_user_url(user)
+        user.reload
+        expect(user.locked_at).not_to be_nil
+        expect(response).to redirect_to(edit_user_url(user))
+        expect(flash[:notice]).to eq("User has been locked.")
+      end
+
+      it "unlocks a locked user" do
+        user = create(:user, :locked)
+        expect(user.locked_at).not_to be_nil
+        post toggle_lock_status_user_url(user)
+        user.reload
+        expect(user.locked_at).to be_nil
+        expect(user.failed_attempts).to eq(0)
+        expect(response).to redirect_to(edit_user_url(user))
+        expect(flash[:notice]).to eq("User has been unlocked.")
+      end
+    end
+
+    context "when user is not a super_user" do
+      before do
+        non_admin_user = create(:user)
+        sign_in non_admin_user
+      end
+
+      it "redirects with an error message" do
+        user = User.create! valid_attributes
+        post toggle_lock_status_user_url(user)
+        expect(response).to redirect_to(users_url)
+        expect(flash[:alert]).to eq("You don't have permission to perform this action.")
+      end
+
+      it "does not change the user's lock status" do
+        user = User.create! valid_attributes
+        original_locked_at = user.locked_at
+        post toggle_lock_status_user_url(user)
+        user.reload
+        expect(user.locked_at).to eq(original_locked_at)
+      end
+    end
+  end
 end
