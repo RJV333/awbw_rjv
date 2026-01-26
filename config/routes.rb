@@ -93,6 +93,7 @@ Rails.application.routes.draw do
     member do
       get :generate_facilitator
       post :toggle_lock_status
+      post :confirm_email
     end
   end
   resources :user_forms
