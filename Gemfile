@@ -53,6 +53,8 @@ gem "active_storage_validations", "~> 3.0"
 
 gem "positioning", "~> 0.4.7"
 
+gem "action_policy", "~> 0.7.6"
+
 group :development do
   gem "rubocop-rails-omakase", require: false
 end
@@ -65,7 +67,7 @@ group :development, :test do
   # https://github.com/banister/binding_of_caller/pull/90
   gem "binding_of_caller", github: "kivikakk/binding_of_caller", branch: "push-yrnnzolypxun"
 
-  gem "brakeman", "~> 7.1.2", require: false
+  gem "brakeman", "~> 8.0.0", require: false
   gem "bundler-audit", require: false
   gem "capybara", "~> 3.36"
   gem "dotenv-rails"

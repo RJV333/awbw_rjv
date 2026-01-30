@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [ :show, :edit, :update, :destroy, :generate_facilitator, :toggle_lock_status, :confirm_email ]
+  before_action :set_user, only: [ :show, :edit, :update, :destroy, :generate_facilitator, :toggle_lock_status, :confirm_email, :send_reset_password_instructions ]
 
   def index
-    return redirect_to authenticated_root_path unless current_user.super_user?
+    return redirect_to root_path unless current_user.super_user?
 
     per_page = params[:number_of_items_per_page].presence || 25
     users = User.search_by_params(params).order(:first_name, :last_name)
@@ -77,7 +77,7 @@ class UsersController < ApplicationController
     if @user.update_with_password(password_params)
       bypass_sign_in(@user)
       flash[:notice] = "Your Password was updated."
-      redirect_to authenticated_root_path
+      redirect_to root_path
     else
       flash[:alert] = "#{@user.errors.full_messages.join(", ")}"
       render "change_password"
@@ -95,6 +95,11 @@ class UsersController < ApplicationController
         redirect_to @user, alert: "Unable to create facilitator: #{@facilitator.errors.full_messages.join(", ")}" and return
       end
     end
+  end
+
+  def send_reset_password_instructions
+    @user.send_reset_password_instructions
+    redirect_to users_path, notice: "Reset password instructions sent to #{@user.email}."
   end
 
   def toggle_lock_status
